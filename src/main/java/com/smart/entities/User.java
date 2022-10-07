@@ -35,7 +35,6 @@ public class User {
 	private String email;
 	
 	@NotBlank(message="Password can not be empty !!")
-	@Size(min=3, max=12, message="Password must be between 3-12 charactrs !!")
 	private String password;
 	private String role;
 	
