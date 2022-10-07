@@ -4,9 +4,11 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +20,9 @@ import com.smart.helper.Message;
 
 @Controller
 public class Homecontroller {
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -47,7 +52,7 @@ public class Homecontroller {
 		try {
 			if(!agreement)
 			{
-				System.out.println("You have not agreed the terms and conditions");
+//				System.out.println("You have not agreed the terms and conditions");
 				throw new Exception("You have not agreed the terms and conditions");
 			}
 			
@@ -61,6 +66,7 @@ public class Homecontroller {
 			user.setRole("ROLE_USER");
 			user.setEnabled(true);
 			user.setImageUrl("default.png");
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			
 			System.out.println("Agreement"+ agreement);
 			System.out.println(user);
@@ -79,5 +85,11 @@ public class Homecontroller {
 		}
 		
 		return "signup";
+	}
+	
+	@GetMapping("/signin")
+	public String customLogin(Model model) {
+		model.addAttribute("title", "Login Page");
+		return "login";
 	}
 }
